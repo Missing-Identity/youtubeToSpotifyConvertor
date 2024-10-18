@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from youtubeToSpotify import youtube_to_spotify, get_youtube_metadata
+from youtubeToSpotify import youtube_to_spotify
 from spotifyToYoutube import spotify_to_youtube, get_spotify_track_info
 
 app = Flask(__name__)
@@ -11,15 +11,15 @@ def index():
 @app.route('/api/youtube-to-spotify', methods=['POST'])
 def api_youtube_to_spotify():
     youtube_url = request.json['youtube_url']
-    spotify_link = youtube_to_spotify(youtube_url)
-    if spotify_link:
-        title, artist, artwork_url = get_youtube_metadata(youtube_url)
+    try:
+        spotify_link, artwork_url = youtube_to_spotify(youtube_url)
         return jsonify({
             'spotify_link': spotify_link,
             'artwork_url': artwork_url
         })
-    else:
-        return jsonify({'error': 'Track not found on Spotify'}), 404
+    except Exception as e:
+        print(f"Error in api_youtube_to_spotify: {str(e)}")
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
 @app.route('/api/spotify-to-youtube', methods=['POST'])
 def api_spotify_to_youtube():
@@ -35,4 +35,4 @@ def api_spotify_to_youtube():
         return jsonify({'error': 'Track not found or not available'}), 404
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
