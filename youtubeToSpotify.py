@@ -1,9 +1,9 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from googleapiclient.discovery import build
-import yt_dlp
 import os
 from dotenv import load_dotenv
+from urllib.parse import urlparse, parse_qs
 
 load_dotenv()
 
@@ -20,20 +20,35 @@ spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
 
-PLACEHOLDER_ARTWORK = "https://th.bing.com/th/id/OIP.3J7PcVZf3uIt04PUYAvMTwHaHa?rs=1&pid=ImgDetMain"  # Replace with an actual placeholder image URL
+PLACEHOLDER_ARTWORK = "https://th.bing.com/th/id/OIP.3J7PcVZf3uIt04PUYAvMTwHaHa?rs=1&pid=ImgDetMain"
 
 def get_youtube_metadata(youtube_url):
     """
-    Extract metadata from YouTube Music video using yt-dlp.
+    Extract metadata from YouTube video using YouTube Data API.
     """
-    ydl_opts = {}
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(youtube_url, download=False)
-            title = info.get('title', None)
-            artist = info.get('artist', None)
-            artwork_url = info.get('thumbnail', PLACEHOLDER_ARTWORK)
-            return title, artist, artwork_url
+        # Extract video ID from URL
+        parsed_url = urlparse(youtube_url)
+        video_id = parse_qs(parsed_url.query).get('v', [None])[0]
+        if not video_id:
+            video_id = parsed_url.path.split('/')[-1]
+
+        # Get video details
+        request = youtube.videos().list(
+            part="snippet",
+            id=video_id
+        )
+        response = request.execute()
+
+        if 'items' in response and len(response['items']) > 0:
+            snippet = response['items'][0]['snippet']
+            title = snippet['title']
+            channel_title = snippet['channelTitle']
+            thumbnail = snippet['thumbnails']['high']['url']
+            return title, channel_title, thumbnail
+        else:
+            print("No items found in YouTube response")
+            return None, None, PLACEHOLDER_ARTWORK
     except Exception as e:
         print(f"Error extracting YouTube metadata: {str(e)}")
         return None, None, PLACEHOLDER_ARTWORK
@@ -42,22 +57,38 @@ def search_spotify_track(track_name, artist_name=None):
     """
     Search for the song on Spotify using the track name and artist.
     """
-    query = track_name
-    if artist_name:
-        query += f" artist:{artist_name}"
-    results = spotify.search(q=query, type='track', limit=1)
-    if results['tracks']['items']:
-        return results['tracks']['items'][0]['external_urls']['spotify']
-    else:
-        return None
+    try:
+        query = f"{track_name}"
+        if artist_name:
+            query += f" artist:{artist_name}"
+        
+        results = spotify.search(q=query, type='track', limit=1)
+        
+        if results['tracks']['items']:
+            track = results['tracks']['items'][0]
+            return track['external_urls']['spotify'], track['album']['images'][0]['url']
+        else:
+            print(f"No Spotify results for query: {query}")
+            return None, None
+    except Exception as e:
+        print(f"Error searching Spotify: {str(e)}")
+        return None, None
 
 def youtube_to_spotify(youtube_url):
     """
     Convert YouTube Music video link to Spotify track link.
     """
-    title, artist, artwork_url = get_youtube_metadata(youtube_url)
+    title, artist, yt_thumbnail = get_youtube_metadata(youtube_url)
     if title:
-        spotify_link = search_spotify_track(title, artist)
-        return spotify_link, artwork_url
-    else:
-        return None, PLACEHOLDER_ARTWORK
+        print(f"Searching Spotify for: {title} by {artist}")
+        spotify_link, spotify_artwork = search_spotify_track(title, artist)
+        if spotify_link:
+            return spotify_link, spotify_artwork or yt_thumbnail
+        else:
+            print("Track not found on Spotify, trying without artist name")
+            spotify_link, spotify_artwork = search_spotify_track(title)
+            if spotify_link:
+                return spotify_link, spotify_artwork or yt_thumbnail
+    
+    print("Unable to find matching track on Spotify")
+    return None, yt_thumbnail

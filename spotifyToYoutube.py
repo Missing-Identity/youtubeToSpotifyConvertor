@@ -13,10 +13,17 @@ load_dotenv()
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 
-spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
-    client_id=SPOTIPY_CLIENT_ID,
-    client_secret=SPOTIPY_CLIENT_SECRET
-))
+print(f"Client ID: {SPOTIPY_CLIENT_ID[:5]}...") # Print first 5 characters for verification
+print(f"Client Secret: {SPOTIPY_CLIENT_SECRET[:5]}...") # Print first 5 characters for verification
+
+try:
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
+        client_id=SPOTIPY_CLIENT_ID,
+        client_secret=SPOTIPY_CLIENT_SECRET
+    ))
+except Exception as e:
+    print(f"Error initializing Spotify client: {e}")
+    spotify = None
 
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
@@ -25,6 +32,10 @@ def spotify_to_youtube(spotify_url):
     """
     Convert Spotify track link to YouTube and YouTube Music video links.
     """
+    if not spotify:
+        print("Spotify client not initialized")
+        return None, None, None
+
     # Extract the track ID from the Spotify URL, ignoring query parameters
     track_id = spotify_url.split('/')[-1].split('?')[0]
     
@@ -49,12 +60,22 @@ def spotify_to_youtube(spotify_url):
     except SpotifyException as e:
         print(f"Spotify API error: {e}")
         return None, None, None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return None, None, None
 
 # Add this function to the existing file
 def get_spotify_track_info(spotify_url):
+    if not spotify:
+        print("Spotify client not initialized")
+        return None
+
     track_id = spotify_url.split('/')[-1].split('?')[0]
     try:
         return spotify.track(track_id)
     except SpotifyException as e:
         print(f"Spotify API error: {e}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error: {e}")
         return None
