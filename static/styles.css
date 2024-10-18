@@ -1,0 +1,283 @@
+/* Add these new styles at the beginning of the file */
+.background-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px);
+  opacity: 0.3;
+  z-index: -1;
+  transition: background-image 0.5s ease-in-out;
+}
+
+.fluid-mesh {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  text-align: center;
+  color: #ff0000;
+  font-size: 36px;
+  margin-bottom: 40px;
+}
+
+.converter {
+  background-color: rgba(40, 40, 40, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-top: 0;
+  color: #ffffff;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #3e3e3e;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #ff0000;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #d30000;
+}
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.artwork {
+  width: 100px;
+  height: 100px;
+  background-color: #3e3e3e;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  background-size: cover;
+  background-position: center;
+}
+
+.result {
+  padding: 15px;
+  background-color: transparent;
+  border-radius: 4px;
+  word-break: break-all;
+  font-size: 14px;
+}
+
+.result a {
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px 15px;
+  margin: 5px 0;
+  border-radius: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  color: #ffffff;
+}
+
+/* Add these new styles for Spotify buttons */
+.spotify-button {
+  background-color: #1db954; /* Spotify green */
+  color: white;
+}
+
+.spotify-button:hover {
+  background-color: #1ed760; /* Lighter Spotify green for hover */
+}
+
+/* Specific styles for Spotify and YouTube links */
+.spotify-link {
+  background-color: #1db954; /* Spotify green */
+}
+
+.spotify-link:hover {
+  background-color: #1ed760; /* Lighter Spotify green for hover */
+  box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+}
+
+.youtube-link {
+  background-color: #ff0000; /* YouTube red */
+}
+
+.youtube-link:hover {
+  background-color: #d30000;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+/* Media Queries for Responsive Design */
+@media (min-width: 600px) {
+  .input-group {
+    flex-direction: row;
+  }
+
+  input[type="text"] {
+    flex-grow: 1;
+    margin-bottom: 0;
+    border-radius: 4px 0 0 4px;
+  }
+
+  button {
+    border-radius: 0 4px 4px 0;
+  }
+
+  .result-container {
+    flex-direction: row;
+  }
+
+  .artwork {
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.loading::after {
+  content: "";
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ffffff;
+  border-top: 5px solid #ff0000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .slide-in {
+    animation: slideInMobile 0.5s ease-out;
+  }
+
+  @keyframes slideInMobile {
+    0% {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* Add this to your existing CSS */
+.fluid-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.background-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px);
+  opacity: 0.2;
+  z-index: -2;
+  transition: background-image 0.5s ease-in-out;
+}
+
+/* The rest of your CSS remains the same */

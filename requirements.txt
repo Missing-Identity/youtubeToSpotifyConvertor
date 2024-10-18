@@ -1,0 +1,6 @@
+spotipy
+youtube-dl
+google-api-python-client
+yt-dlp
+flask
+python-dotenv
