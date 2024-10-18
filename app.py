@@ -35,4 +35,4 @@ def api_spotify_to_youtube():
         return jsonify({'error': 'Track not found or not available'}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
