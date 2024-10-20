@@ -2,9 +2,25 @@
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #282828;
+  background-color: rgba(40, 40, 40, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.background-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px);
+  opacity: 0.3;
+  z-index: -1;
+  transition: background-image 0.5s ease-in-out;
 }
 
 .artwork {

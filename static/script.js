@@ -20,28 +20,49 @@ function setBackgroundCover(imageUrl) {
   ).style.backgroundImage = `url(${imageUrl})`;
 }
 
-function convertYouTubeToSpotify() {
-  const youtubeUrl = document.getElementById("youtube-url").value;
-  const resultDiv = document.getElementById("spotify-result");
-  const artworkDiv = document.getElementById("youtube-artwork");
+function convertLink() {
+  const musicUrl = document.getElementById("music-url").value;
+  const resultDiv = document.getElementById("result");
+  const artworkDiv = document.getElementById("artwork");
+  const convertButton = document.getElementById("convert-button");
 
-  showLoading("spotify-result");
+  showLoading("result");
 
-  fetch("/api/youtube-to-spotify", {
+  let apiEndpoint = "";
+  let sourceType = "";
+
+  if (musicUrl.includes("youtube.com") || musicUrl.includes("youtu.be")) {
+    apiEndpoint = "/api/youtube-to-spotify";
+    sourceType = "youtube";
+  } else if (musicUrl.includes("spotify.com")) {
+    apiEndpoint = "/api/spotify-to-youtube";
+    sourceType = "spotify";
+  } else {
+    resultDiv.textContent =
+      "Invalid URL. Please enter a valid YouTube or Spotify link.";
+    return;
+  }
+
+  fetch(apiEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ youtube_url: youtubeUrl }),
+    body: JSON.stringify({ url: musicUrl }),
   })
     .then((response) => response.json())
     .then((data) => {
-      hideLoading("spotify-result");
-      if (data.spotify_link) {
-        const spotifyId = data.spotify_link.split("/").pop().split("?")[0];
+      hideLoading("result");
+      if (data.converted_link) {
+        const targetType = sourceType === "youtube" ? "spotify" : "youtube";
+        const buttonClass = `${targetType}-link`;
+        const buttonText = `Open in ${
+          targetType.charAt(0).toUpperCase() + targetType.slice(1)
+        }`;
+
         resultDiv.innerHTML = `
-          <a href="${data.spotify_link}" target="_blank" class="spotify-link">Open in Spotify</a>
-          <a href="/player?id=${spotifyId}&source=spotify" class="spotify-link">Play Preview</a>
+          <a href="${data.converted_link}" target="_blank" class="${buttonClass}">${buttonText}</a>
+          <a href="/player?id=${data.track_id}&source=${targetType}" class="${buttonClass}">Play Preview</a>
         `;
         resultDiv.className = "result slide-in";
         if (data.artwork_url) {
@@ -49,59 +70,16 @@ function convertYouTubeToSpotify() {
           artworkDiv.className = "artwork fade-in";
           setBackgroundCover(data.artwork_url);
         }
+        convertButton.className =
+          sourceType === "youtube" ? "spotify-button" : "youtube-button";
       } else {
-        resultDiv.textContent = "Track not found on Spotify";
+        resultDiv.textContent = data.error || "Conversion failed";
         resultDiv.className = "result slide-in";
         artworkDiv.style.backgroundImage = "none";
       }
     })
     .catch((error) => {
-      hideLoading("spotify-result");
-      resultDiv.textContent = "An error occurred";
-      resultDiv.className = "result slide-in";
-      artworkDiv.style.backgroundImage = "none";
-      console.error("Error:", error);
-    });
-}
-
-function convertSpotifyToYouTube() {
-  const spotifyUrl = document.getElementById("spotify-url").value;
-  const resultDiv = document.getElementById("youtube-result");
-  const artworkDiv = document.getElementById("spotify-artwork");
-
-  showLoading("youtube-result");
-
-  fetch("/api/spotify-to-youtube", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ spotify_url: spotifyUrl }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      hideLoading("youtube-result");
-      if (data.youtube_music_link) {
-        const youtubeId = data.youtube_music_link.split("v=")[1];
-        resultDiv.innerHTML = `
-          <a href="${data.youtube_music_link}" target="_blank" class="youtube-link">Open in YouTube Music</a>
-          <a href="/player?id=${youtubeId}&source=youtube" class="youtube-link">Play Preview</a>
-        `;
-        resultDiv.className = "result slide-in";
-        if (data.artwork_url) {
-          artworkDiv.style.backgroundImage = `url(${data.artwork_url})`;
-          artworkDiv.className = "artwork fade-in";
-          setBackgroundCover(data.artwork_url);
-        }
-      } else {
-        resultDiv.textContent =
-          data.error || "Track not found on YouTube Music";
-        resultDiv.className = "result slide-in";
-        artworkDiv.style.backgroundImage = "none";
-      }
-    })
-    .catch((error) => {
-      hideLoading("youtube-result");
+      hideLoading("result");
       resultDiv.textContent = "An error occurred";
       resultDiv.className = "result slide-in";
       artworkDiv.style.backgroundImage = "none";

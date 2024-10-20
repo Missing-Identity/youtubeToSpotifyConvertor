@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById(
         "artwork"
       ).style.backgroundImage = `url(${data.artwork_url})`;
+      setBackgroundCover(data.artwork_url);
 
       if (source === "spotify") {
         const audioPlayer = document.getElementById("audio-player");
@@ -38,8 +39,17 @@ document.addEventListener("DOMContentLoaded", function () {
       audioPlayer.loop = !audioPlayer.loop;
       this.textContent = audioPlayer.loop ? "Unloop" : "Loop";
     } else if (source === "youtube") {
-      // YouTube looping is not directly supported in this setup
       alert("Looping is not available for YouTube previews");
     }
   });
 });
+
+function setBackgroundCover(imageUrl) {
+  const backgroundCover = document.querySelector(".background-cover");
+  if (!backgroundCover) {
+    const newBackgroundCover = document.createElement("div");
+    newBackgroundCover.className = "background-cover";
+    document.body.appendChild(newBackgroundCover);
+  }
+  backgroundCover.style.backgroundImage = `url(${imageUrl})`;
+}

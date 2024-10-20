@@ -13,18 +13,8 @@
   transition: background-image 0.5s ease-in-out;
 }
 
-.fluid-mesh {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  opacity: 0.5;
-}
-
 body {
-  font-family: "Lato", sans-serif;
+  font-family: "Circular", Arial, sans-serif;
   background-color: #121212;
   color: #ffffff;
   margin: 0;
@@ -41,7 +31,7 @@ body {
 
 h1 {
   text-align: center;
-  color: #ff0000;
+  color: #1db954;
   font-size: 36px;
   margin-bottom: 40px;
 }
@@ -72,27 +62,28 @@ h2 {
 input[type="text"] {
   padding: 12px;
   border: none;
-  border-radius: 4px;
+  border-radius: 25px;
   font-size: 16px;
-  background-color: #3e3e3e;
+  background-color: #282828;
   color: #ffffff;
   margin-bottom: 10px;
 }
 
 button {
-  background-color: #ff0000;
+  background-color: #1db954;
   color: white;
   padding: 12px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 25px;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.1s;
 }
 
 button:hover {
-  background-color: #d30000;
+  background-color: #1ed760;
+  transform: scale(1.05);
 }
 
 .result-container {
@@ -124,34 +115,63 @@ button:hover {
   text-decoration: none;
   padding: 10px 15px;
   margin: 5px 0;
-  border-radius: 20px;
+  border-radius: 25px;
   font-weight: bold;
   transition: all 0.3s ease;
   color: #ffffff;
 }
 
+/* Add styles for the waveform animation */
+@keyframes waveform {
+  0% {
+    height: 5px;
+  }
+  50% {
+    height: 20px;
+  }
+  100% {
+    height: 5px;
+  }
+}
+
+.waveform-bar {
+  width: 5px;
+  background-color: #1db954;
+  margin: 0 2px;
+  animation: waveform 1s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.waveform-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 50px;
+  margin-top: 20px;
+}
+
 /* Add these new styles for Spotify buttons */
 .spotify-button {
-  background-color: #1db954; /* Spotify green */
+  background-color: #1db954;
   color: white;
 }
 
 .spotify-button:hover {
-  background-color: #1ed760; /* Lighter Spotify green for hover */
+  background-color: #1ed760;
 }
 
 /* Specific styles for Spotify and YouTube links */
 .spotify-link {
-  background-color: #1db954; /* Spotify green */
+  background-color: #1db954;
 }
 
 .spotify-link:hover {
-  background-color: #1ed760; /* Lighter Spotify green for hover */
-  box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+  background-color: #1ed760;
+  transform: scale(1.05);
 }
 
 .youtube-link {
-  background-color: #ff0000; /* YouTube red */
+  background-color: #ff0000;
 }
 
 .youtube-link:hover {
@@ -281,3 +301,26 @@ button:hover {
 }
 
 /* The rest of your CSS remains the same */
+
+/* Add these new styles for the buttons */
+.spotify-button,
+.spotify-link {
+  background-color: #1db954;
+  color: white;
+}
+
+.spotify-button:hover,
+.spotify-link:hover {
+  background-color: #1ed760;
+}
+
+.youtube-button,
+.youtube-link {
+  background-color: #ff0000;
+  color: white;
+}
+
+.youtube-button:hover,
+.youtube-link:hover {
+  background-color: #d30000;
+}

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Music Link Converter</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Circular:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -17,32 +17,19 @@
     <div class="background-cover"></div>
     <div class="container">
       <h1>Music Link Converter</h1>
-      <div class="converter frosted-glass">
-        <h2>YouTube to Spotify</h2>
+      <div class="converter">
+        <h2>Convert Link</h2>
         <div class="input-group">
           <input
             type="text"
-            id="youtube-url"
-            placeholder="Enter YouTube Music URL"
+            id="music-url"
+            placeholder="Enter YouTube or Spotify URL"
           />
-          <button onclick="convertYouTubeToSpotify()" class="spotify-button">
-            Convert
-          </button>
+          <button onclick="convertLink()" id="convert-button">Convert</button>
         </div>
         <div class="result-container">
-          <div id="youtube-artwork" class="artwork"></div>
-          <div id="spotify-result" class="result"></div>
-        </div>
-      </div>
-      <div class="converter frosted-glass">
-        <h2>Spotify to YouTube</h2>
-        <div class="input-group">
-          <input type="text" id="spotify-url" placeholder="Enter Spotify URL" />
-          <button onclick="convertSpotifyToYouTube()">Convert</button>
-        </div>
-        <div class="result-container">
-          <div id="spotify-artwork" class="artwork"></div>
-          <div id="youtube-result" class="result"></div>
+          <div id="artwork" class="artwork"></div>
+          <div id="result" class="result"></div>
         </div>
       </div>
     </div>
